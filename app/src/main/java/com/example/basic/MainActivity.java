@@ -18,45 +18,26 @@ import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button sendEMS;
+    Button button_ESMNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sendEMS = (Button)findViewById(R.id.button);
-        sendEMS.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(), "ONCLICKLISTENER", Toast.LENGTH_SHORT).show();
-                        try {
-                            ESMFactory factory = new ESMFactory();
-
-                            //define ESM question
-                            ESM_Likert esmLikert = new ESM_Likert();
-                            esmLikert.setLikertMax(5)
-                                    .setLikertMaxLabel("Great")
-                                    .setLikertMinLabel("Poor")
-                                    .setLikertStep(1)
-                                    .setTitle("Likert")
-                                    .setInstructions("Likert ESM")
-                                    .setSubmitButton("OK");
-
-                            //add them to the factory
-                            factory.addESM(esmLikert);
-
-                            //Queue them
-                            ESM.queueESM(getApplicationContext(), factory.build());
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
+        button_ESMNotification = (Button)findViewById(R.id.button);
         Intent aware = new Intent(this, Aware.class);
+
+        Aware.setSetting(this, Aware_Preferences.DEBUG_FLAG, true);
+
+        button_ESMNotification = (Button) findViewById(R.id.button);
+        button_ESMNotification.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Aware.setSetting(getApplicationContext(), Aware_Preferences.STATUS_ESM, true);
+                TestESM testESM = new TestESM();
+                testESM.test(getApplicationContext());
+            }
+        });
 
         //Accelerometer
         Aware.setSetting(getApplicationContext(), Aware_Preferences.FREQUENCY_ACCELEROMETER, 200000); //20Hz
