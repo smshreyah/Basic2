@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -26,7 +27,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         button_ESMNotification = (Button)findViewById(R.id.button);
+        Log.d("Main", "Before aware intent");
         Intent aware = new Intent(this, Aware.class);
+        startActivity(aware);
+
+        Log.d("Main", "Before provider service intent");
+        Intent intent = new Intent(MainActivity.this, ProviderService.class);
+        this.startService(intent);
+
+        Log.d("Main", "After provider service");
 
         Aware.setSetting(this, Aware_Preferences.DEBUG_FLAG, true);
 
@@ -46,8 +55,7 @@ public class MainActivity extends AppCompatActivity {
         //Applying Settings
         sendBroadcast(new Intent(Aware.ACTION_AWARE_CURRENT_CONTEXT));
 
-        Intent intent = new Intent(this, ProviderService.class);
-        startService(intent);
+
 
     }
 
