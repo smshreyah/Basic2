@@ -14,6 +14,7 @@ import com.aware.Aware_Preferences;
 import com.aware.ESM;
 import com.aware.ui.esms.ESMFactory;
 import com.aware.ui.esms.ESM_Likert;
+import com.aware.utils.Aware_Accounts;
 
 import org.json.JSONException;
 
@@ -27,17 +28,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         button_ESMNotification = (Button)findViewById(R.id.button);
-        Log.d("Main", "Before aware intent");
-        Intent aware = new Intent(this, Aware.class);
-        startActivity(aware);
+        //Log.d("Main", "Before aware intent");
+//        Intent aware = new Intent(this, Aware.class);
+//        startService(aware);
+        Aware.startAWARE(getApplicationContext());
+        //Aware.getAWAREAccount(getApplicationContext());
 
-        Log.d("Main", "Before provider service intent");
-        Intent intent = new Intent(MainActivity.this, ProviderService.class);
-        this.startService(intent);
+        //Applying Settings
+        sendBroadcast(new Intent(Aware.ACTION_AWARE_CURRENT_CONTEXT));
 
-        Log.d("Main", "After provider service");
+        Log.d("Main", "before JoinStudy");Aware.joinStudy(getApplicationContext(),"https://compwell.ece.rice.edu/AWARE/index.php/webservice/index/25/obl56DNEE2mw");
+
+        boolean joinedStudy = Aware.isStudy(getApplicationContext());
+        if (joinedStudy){
+            Log.d("Main", "has joined study");
+        }
+
+        //Log.d("Main", "Before provider service intent");
+        startService(new Intent(MainActivity.this,ProviderService.class));
+        startService(new Intent(MainActivity.this, SensorService.class));
 
         Aware.setSetting(this, Aware_Preferences.DEBUG_FLAG, true);
+
 
         button_ESMNotification = (Button) findViewById(R.id.button);
         button_ESMNotification.setOnClickListener(new View.OnClickListener() {
@@ -51,9 +63,6 @@ public class MainActivity extends AppCompatActivity {
         //Accelerometer
         Aware.setSetting(getApplicationContext(), Aware_Preferences.FREQUENCY_ACCELEROMETER, 200000); //20Hz
         Aware.setSetting(getApplicationContext(), Aware_Preferences.THRESHOLD_ACCELEROMETER, 0.02f); // [x,y,z] > 0.02 to log
-
-        //Applying Settings
-        sendBroadcast(new Intent(Aware.ACTION_AWARE_CURRENT_CONTEXT));
 
 
 
